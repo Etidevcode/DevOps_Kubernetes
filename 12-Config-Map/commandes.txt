@@ -1,0 +1,89 @@
+# Create COnfig Map
+ubuntu@ip-172-31-35-137:~$ vim samplecm.yaml
+
+==========================================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: game-demo
+data:
+  # property-like keys; each key maps to a simple value
+  player_initial_lives: "3"
+  ui_properties_file_name: "user-interface.properties"
+
+  # file-like keys
+  game.properties: |
+    enemy.types=aliens,monsters
+    player.maximum-lives=5
+  user-interface.properties: |
+    color.good=purple
+    color.bad=yellow
+    allow.textmode=true
+==========================================================================
+
+ubuntu@ip-172-31-35-137:~$ kubectl apply -f samplecm.yaml
+ubuntu@ip-172-31-35-137:~$ kubectl get cm
+ubuntu@ip-172-31-35-137:~$ kubectl get cm game-demo -o yaml
+ubuntu@ip-172-31-35-137:~$ kubectl get cm
+ubuntu@ip-172-31-35-137:~$ vim readcmpod.yaml
+
+===============================================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-demo-pod
+spec:
+  containers:
+    - name: demo
+      image: alpine
+      command: ["sleep", "3600"]
+      env:
+        # Define the environment variable
+        - name: PLAYER_INITIAL_LIVES # Notice that the case is different here
+                                     # from the key name in the ConfigMap.
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo           # The ConfigMap this value comes from.
+              key: player_initial_lives # The key to fetch.
+        - name: UI_PROPERTIES_FILE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo
+              key: ui_properties_file_name
+      volumeMounts:
+      - name: config
+        mountPath: "/config"
+        readOnly: true
+  volumes:
+    # You set volumes at the Pod level, then mount them into containers inside that Pod
+    - name: config
+      configMap:
+        # Provide the name of the ConfigMap you want to mount.
+        name: game-demo
+        # An array of keys from the ConfigMap to create as files
+        items:
+        - key: "game.properties"
+          path: "game.properties"
+        - key: "user-interface.properties"
+          path: "user-interface.properties"
+
+===================================================================================
+
+ubuntu@ip-172-31-35-137:~$ kubectl apply -f readcmpod.yaml
+ubuntu@ip-172-31-35-137:~$ kubectl get pod
+ubuntu@ip-172-31-35-137:~$ kubectl exec --stdin --tty configmap-demo-pod -- /bin/sh
+/ # ls /config/
+
+/ # cd /config/
+
+/config # cat game.properties
+
+/config # cat user-interface.properties
+
+/config # echo $PLAYER_INITIAL_LIVES
+
+/config # echo $UI_PROPERTIES_FILE_NAME
+
+/config # exit
+
+ubuntu@ip-172-31-35-137:~$

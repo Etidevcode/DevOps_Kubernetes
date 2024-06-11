@@ -1,0 +1,73 @@
+# Encode text
+echo -n "admin" | base64
+echo -n "mysecretpass" | base64
+
+# Decode text
+echo -n "admin" | base64
+echo -n "mysecretpass" | base64 --decode
+
+# Test Encode
+ubuntu@ip-172-31-35-137:~$ echo -n "mysecretpass" | base64
+ubuntu@ip-172-31-35-137:~$ echo -n "secretpass" | base64
+ubuntu@ip-172-31-35-137:~$ echo 'c2VjcmV0cGFzcw==' | base64 --decode
+secretpassubuntu@ip-172-31-35-137:~$ press enter
+ubuntu@ip-172-31-35-137:~$ echo -n "admin" | base64
+ubuntu@ip-172-31-35-137:~$ echo -n "mysecretpass" | base64
+
+
+
+# Create Secret
+ubuntu@ip-172-31-35-137:~$ vim mysecret.yaml
+
+=========================================
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+data:
+  username: YWRtaW4=
+  password: bXlzZWNyZXRwYXNz
+type: Opaque
+===============================================
+
+ubuntu@ip-172-31-35-137:~$ kubectl create -f mysecret.yaml
+
+# Create Pod to read secret keys
+ubuntu@ip-172-31-35-137:~$ vim readsecret.yaml
+
+============================================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-env-pod
+spec:
+  containers:
+  - name: mycontainer
+    image: redis
+    env:
+      - name: SECRET_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: mysecret
+            key: username
+            optional: false # same as default; "mysecret" must exist
+                            # and include a key named "username"
+      - name: SECRET_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mysecret
+            key: password
+            optional: false # same as default; "mysecret" must exist
+                            # and include a key named "password"
+  restartPolicy: Never
+========================================================================
+
+ubuntu@ip-172-31-35-137:~$ kubectl create -f readsecret.yaml
+ubuntu@ip-172-31-35-137:~$ kubectl get pod
+
+# Login to Pod echo print variables
+ubuntu@ip-172-31-35-137:~$ kubectl exec --stdin --tty secret-env-pod -- /bin/bash
+root@secret-env-pod:/data# echo $username
+root@secret-env-pod:/data# echo $SECRET_USERNAME
+root@secret-env-pod:/data# echo $SECRET_PASSWORD
+root@secret-env-pod:/data#

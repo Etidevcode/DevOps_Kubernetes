@@ -1,0 +1,129 @@
+ubuntu@ip-172-31-35-137:~$ cd definitions/pod/
+ubuntu@ip-172-31-35-137:~/definitions/pod$ cat vproapppod.yaml
+
+===============================================================
+---
+apiVersion: v1
+kind: Pod
+metadata :
+  name: vproapp
+  labels:
+    app: vproapp
+spec:
+  containers:
+    - name: appcontainer
+      image: etixi/freshtomapp:V7
+      ports:
+        - name: vproapp-port
+          containerPort: 8080
+==================================================================
+
+ubuntu@ip-172-31-35-137:~/definitions/pod$ kubectl get pod
+ubuntu@ip-172-31-35-137:~/definitions/pod$ cd ..
+ubuntu@ip-172-31-35-137:~/definitions$ ls
+ubuntu@ip-172-31-35-137:~/definitions$ mv pod app
+ubuntu@ip-172-31-35-137:~/definitions$ cd app/
+ubuntu@ip-172-31-35-137:~/definitions/app$ ls
+ubuntu@ip-172-31-35-137:~/definitions/app$ cat vproapppod.yaml
+
+=====================================================================
+---
+apiVersion: v1
+kind: Pod
+metadata :
+  name: vproapp
+  labels:
+    app: vproapp
+spec:
+  containers:
+    - name: appcontainer
+      image: etixi/freshtomapp:V7
+      ports:
+        - name: vproapp-port
+          containerPort: 8080
+===================================================================
+
+
+ubuntu@ip-172-31-35-137:~/definitions/app$ vim vproapp-nodeport.yaml
+ubuntu@ip-172-31-35-137:~/definitions/app$ cat vproapp-nodeport.yaml
+
+====================================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld-service
+spec:
+  ports:
+  - port: 8090
+    nodePort: 30001
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: vproapp
+  type: NodePort
+==========================================================================
+
+ubuntu@ip-172-31-35-137:~/definitions/app$ vim vproapp-nodeport.yaml
+
+====================================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld-service
+spec:
+  ports:
+  - port: 8090
+    nodePort: 30001
+    targetPort: vproapp-port
+    protocol: TCP
+  selector:
+    app: vproapp
+  type: NodePort
+==========================================================================
+
+
+ubuntu@ip-172-31-35-137:~/definitions/app$ kubectl create -f vproapp-nodeport.yaml
+ubuntu@ip-172-31-35-137:~/definitions/app$ kubectl get svc
+ubuntu@ip-172-31-35-137:~/definitions/app$ kubectl get pod
+ubuntu@ip-172-31-35-137:~/definitions/app$ kubectl describe pod | grep IP
+
+ubuntu@ip-172-31-35-137:~/definitions/app$ cd
+ubuntu@ip-172-31-35-137:~$ kubectl delete svc helloworld-service
+ubuntu@ip-172-31-35-137:~$ cd definitions/app/
+ubuntu@ip-172-31-35-137:~/definitions/app$ cp vproapp-nodeport.yaml vproapp-loadbalancer.yml
+ubuntu@ip-172-31-35-137:~/definitions/app$ vim vproapp-loadbalancer.yml
+
+===========================================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld-service
+spec:
+  ports:
+  - port: 80
+    targetPort: vproapp-port
+    protocol: TCP
+  selector:
+    app: vproapp
+  type: LoadBalancer
+===========================================================================
+
+ubuntu@ip-172-31-35-137:~/definitions/app$ kubectl create -f vproapp-loadbalancer.yml
+ubuntu@ip-172-31-35-137:~/definitions/app$ kubectl get pod
+ubuntu@ip-172-31-35-137:~/definitions/app$ cd
+ubuntu@ip-172-31-35-137:~$ kubectl delete svc helloworld-service
+
+ubuntu@ip-172-31-35-137:~$ cd definitions/app/
+ubuntu@ip-172-31-35-137:~/definitions/app$ cp vproapp-nodeport.yaml vproapp-loadbalancer.yml
+ubuntu@ip-172-31-35-137:~/definitions/app$ vim vproapp-loadbalancer.yml
+ubuntu@ip-172-31-35-137:~/definitions/app$ kubectl create -f vproapp-loadbalancer.yml
+
+ubuntu@ip-172-31-35-137:~/definitions/app$ kubectl get pod
+
+ubuntu@ip-172-31-35-137:~/definitions/app$ cd
+ubuntu@ip-172-31-35-137:~$ getkubectl get all
+
+ubuntu@ip-172-31-35-137:~$ kubectl delete pod/vproapp
+
+ubuntu@ip-172-31-35-137:~$ kubectl delete service/helloworld-service
+ubuntu@ip-172-31-35-137:~$ kubectl delete pod/nginx12

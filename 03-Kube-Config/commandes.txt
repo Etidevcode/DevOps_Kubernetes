@@ -1,0 +1,22 @@
+Open git and run
+===================================
+
+ubuntu@ip-172-31-43-149:~$ ls -a
+
+ubuntu@ip-172-31-43-149:~$ pwd
+/home/ubuntu
+ubuntu@ip-172-31-43-149:~$ ls -a
+
+ubuntu@ip-172-31-43-149:~$ ls .kube/
+
+ubuntu@ip-172-31-43-149:~$ less .kube/config
+ubuntu@ip-172-31-43-149:~$ kubectl config view
+ubuntu@ip-172-31-43-149:~$ cat ~/.kube/config (copie)
+
+
+Open another git and run
+===================================
+
+$ mkdir ~/.kube
+$ vim ~/.kube/config (colle)
+$ kubectl get nodes

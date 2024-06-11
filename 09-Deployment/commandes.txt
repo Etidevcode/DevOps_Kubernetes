@@ -1,0 +1,73 @@
+ubuntu@ip-172-31-35-137:~$ vim deployment.yaml
+
+
+===========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+===============================================
+
+
+ubuntu@ip-172-31-35-137:~$ kubectl apply -f deployment.yaml
+ubuntu@ip-172-31-35-137:~$ kubectl get deploy
+ubuntu@ip-172-31-35-137:~$ kubectl get rs
+ubuntu@ip-172-31-35-137:~$ kubectl get pod
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-85996f8dbd-8dqps   1/1     Running   0          27s
+nginx-deployment-85996f8dbd-cr8jq   1/1     Running   0          27s
+nginx-deployment-85996f8dbd-hfjsj   1/1     Running   0          27s
+
+ubuntu@ip-172-31-35-137:~$ kubectl describe pod nginx-deployment-85996f8dbd-8dqps
+
+ubuntu@ip-172-31-35-137:~$ kubectl set image deployment.v1.apps/nginx-deployment nginx=nginx:1.16.1
+
+ubuntu@ip-172-31-35-137:~$ kubectl get deploy
+
+ubuntu@ip-172-31-35-137:~$ kubectl get pod
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-66f8758855-4p2m6   1/1     Running   0          13s
+nginx-deployment-66f8758855-fq9rj   1/1     Running   0          18s
+nginx-deployment-66f8758855-pghrk   1/1     Running   0          23s
+
+ubuntu@ip-172-31-35-137:~$ kubectl describe pod nginx-deployment-66f8758855-4p2m6
+
+
+ubuntu@ip-172-31-35-137:~$ kubectl get rs
+
+NAME                          DESIRED   CURRENT   READY   AGE
+nginx-deployment-66f8758855   3         3         3       2m30s
+nginx-deployment-85996f8dbd   0         0         0       6m27s
+
+ubuntu@ip-172-31-35-137:~$ kubectl rollout undo deployment/nginx-deployment
+
+ubuntu@ip-172-31-35-137:~$ kubectl get rs
+
+ubuntu@ip-172-31-35-137:~$ kubectl get pod
+
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-85996f8dbd-496zf   1/1     Running   0          11s
+nginx-deployment-85996f8dbd-t667d   1/1     Running   0          8s
+nginx-deployment-85996f8dbd-zvkst   1/1     Running   0          10s
+
+ubuntu@ip-172-31-35-137:~$ kubectl describe pod nginx-deployment-85996f8dbd-496zf | grep Image
+ubuntu@ip-172-31-35-137:~$ kubectl rollout history deployment/nginx-deployment
+ubuntu@ip-172-31-35-137:~$ kubectl get deploy
+ubuntu@ip-172-31-35-137:~$ kubectl delete deploy nginx-deployment

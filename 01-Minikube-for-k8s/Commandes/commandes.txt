@@ -1,0 +1,57 @@
+
+$ git clone https://github.com/devopshydclub/vprofile-project.git
+
+$ cd vprofile-project/
+
+$ git pull
+
+$ git checkout kubernetes-setup
+
+$ ls
+
+$ cd minikube/
+
+$ ls
+
+$ cat Minikube-commands.txt
+
+
+$ cd
+
+$ minikube.exe --help
+
+$ minikube start --no-vtx-check
+
+$ kubectl get nodes
+
+$ cat .kube/config
+
+$ kubectl.exe get nodes
+
+$ kubectl create deployment hello-minikube --image=k8.gcr.io/echoserver:1.10
+
+
+$ kubectl.exe get nodes
+
+$ kubectl.exe get pod
+
+$ kubectl.exe get deploy
+
+
+$ kubectl expose deployment hello-minikube --type=NodePort --port=8080
+
+
+$ minikube service hello-minikube --url
+
+$ kubectl.exe get svc
+
+$ kubectl.exe delete svc hello-minikube
+
+$ kubectl.exe get deploy
+
+
+$ kubectl.exe delete deploy hello-minikube
+
+$ minikube.exe stop
+
+$ minikube.exe delete

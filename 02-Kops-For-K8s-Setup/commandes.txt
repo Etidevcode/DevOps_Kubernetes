@@ -1,0 +1,60 @@
+
+
+# Install awscli (option 1)
+ubuntu@ip-172-31-24-92:~$ sudo apt update && sudo apt install awscli -y
+
+# Install awscli (option 2)
+ubuntu@ip-172-31-24-92:~$ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+ubuntu@ip-172-31-24-92:~$ unzip awscliv2.zip
+ubuntu@ip-172-31-24-92:~$ sudo ./aws/install
+
+
+ubuntu@ip-172-31-24-92:~$ aws --version
+ubuntu@ip-172-31-24-92:~$ aws configure
+AWS Access Key ID [None]: **********************
+AWS Secret Access Key [None]: **********************
+Default region name [None]: us-east-1
+Default output format [None]: json
+
+ubuntu@ip-172-31-24-92:~$ curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+
+ubuntu@ip-172-31-24-92:~$ ls
+
+ubuntu@ip-172-31-24-92:~$ chmod +x ./kubectl
+ubuntu@ip-172-31-24-92:~$ sudo mv kubectl /usr/local/bin/
+ubuntu@ip-172-31-24-92:~$ kubectl --help
+
+ubuntu@ip-172-31-24-92:~$ kubectl version
+
+ubuntu@ip-172-31-24-92:~$ wget https://github.com/kubernetes/kops/releases/download/v1.26.4/kops-linux-amd64
+
+
+ubuntu@ip-172-31-24-92:~$ ls
+
+ubuntu@ip-172-31-24-92:~$ chmod +x kops-linux-amd64
+ubuntu@ip-172-31-24-92:~$ sudo mv kops-linux-amd64 /usr/local/bin/kops
+ubuntu@ip-172-31-24-92:~$ kops --help
+
+ubuntu@ip-172-31-24-92:~$ kops version
+
+
+
+ubuntu@ip-172-31-24-92:~$ nslookup -type=ns kubevpro.info-hk.xyz
+
+
+ubuntu@ip-172-31-24-92:~$ kops create cluster kubevpro.info-hk.xyz --state=s3://vprofile-kops-state-eti --zones=us-east-2a,us-east-2b --node-count=2 --node-size=t3.small --master-size=t3.medium --dns-zone=kubevpro.info-hk.xyz --node-volume-size=8 --master-volume-size=8
+
+
+ubuntu@ip-172-31-24-92:~$ kops update cluster --name kubevpro.info-hk.xyz --state=s3://vprofile-kops-state-eti --yes --admin
+
+
+
+ubuntu@ip-172-31-24-92:~$ kops validate cluster --state=s3://vprofile-kops-state-eti
+
+ubuntu@ip-172-31-24-92:~$ cat ~/.kuapiVersion: v1
+
+ubuntu@ip-172-31-24-92:~$ kubectl get nodes
+
+ubuntu@ip-172-31-24-92:~$ kops delete cluster --name=kubevpro.info-hk.xyz --state=s3://vprofile-kops-state-eti --yes
+
+

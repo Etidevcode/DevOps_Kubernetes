@@ -1,0 +1,17 @@
+ubuntu@ip-172-31-24-92:~$ mkdir definitions
+ubuntu@ip-172-31-24-92:~$ cd definitions/
+ubuntu@ip-172-31-24-92:~/definitions$ mkdir pod
+ubuntu@ip-172-31-24-92:~/definitions$ cd pod/
+ubuntu@ip-172-31-24-92:~/definitions/pod$ vim vproapppod.yaml
+ubuntu@ip-172-31-24-92:~/definitions/pod$ kubectl create -f vproapppod.yaml
+ubuntu@ip-172-31-24-92:~/definitions/pod$ cat vproapppod.yaml
+
+ubuntu@ip-172-31-24-92:~/definitions/pod$ kubectl get pod
+
+ubuntu@ip-172-31-24-92:~/definitions/pod$ kubectl describe pod vproapp
+
+  
+ubuntu@ip-172-31-24-92:~/definitions/pod$ kubectl get pod
+
+ubuntu@ip-172-31-24-92:~/definitions/pod$ kubectl delete pod webapp-pod
+

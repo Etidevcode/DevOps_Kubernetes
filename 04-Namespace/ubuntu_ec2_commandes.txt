@@ -1,0 +1,9 @@
+ubuntu@ip-172-31-24-92:~$ ls
+
+ubuntu@ip-172-31-24-92:~$ vim pod1.yaml
+ubuntu@ip-172-31-24-92:~$ kubectl apply -f pod1.yaml
+
+ubuntu@ip-172-31-24-92:~$ kubectl get pod -n kubekart
+
+ubuntu@ip-172-31-24-92:~$ kubectl delete ns kubekart
+

@@ -1,0 +1,9 @@
+
+$ kubectl get ns
+$ kubectl get all
+$ kubectl get all --all-namespaces
+$ clear
+$ kubectl get svc -n kube-system
+$ kubectl create ns kubekart
+$ kubectl run nginx1 --image=nginx -n kubekart
+$ kubectl run nginx1 --image=nginx -n kubekart

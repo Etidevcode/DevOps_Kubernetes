@@ -1,0 +1,73 @@
+ubuntu@ip-172-31-35-137:~$ vim replset.yaml
+
+=====================================================
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        image: gcr.io/google-samples/gb-frontend:v3
+=====================================================
+
+ubuntu@ip-172-31-35-137:~$ kubectl create -f replset.yaml
+ubuntu@ip-172-31-35-137:~$ kubectl get rs
+ubuntu@ip-172-31-35-137:~$ kubectl get pod
+NAME             READY   STATUS              RESTARTS   AGE
+frontend-6nxtl   0/1     ContainerCreating   0          16s
+frontend-kjs64   1/1     Running             0          16s
+frontend-q4w6w   0/1     ContainerCreating   0          16s
+ubuntu@ip-172-31-35-137:~$ kubectl delete pod frontend-kjs64 frontend-q4w6w
+ubuntu@ip-172-31-35-137:~$ kubectl get pod
+
+ubuntu@ip-172-31-35-137:~$ vim replset.yaml
+
+=====================================================
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 5
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        image: gcr.io/google-samples/gb-frontend:v3
+=====================================================
+
+ubuntu@ip-172-31-35-137:~$ kubectl apply -f replset.yaml
+
+ubuntu@ip-172-31-35-137:~$ kubectl get pod
+
+ubuntu@ip-172-31-35-137:~$ kubectl scale --replicas=1 rs/frontend
+
+ubuntu@ip-172-31-35-137:~$ kubectl get pod
+
+ubuntu@ip-172-31-35-137:~$ kubectl delete rs frontend
+
+ubuntu@ip-172-31-35-137:~$ kubectl get pod
